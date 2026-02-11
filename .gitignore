@@ -1,0 +1,9 @@
+# Compiled binary
+farasa
+*.exe
+*.dll
+*.so
+*.dylib
+
+# OS files
+.DS_Store
