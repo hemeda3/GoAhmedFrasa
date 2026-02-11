@@ -1,4 +1,4 @@
-package farasa
+package goahmedfrasa
 
 import (
 	"encoding/json"

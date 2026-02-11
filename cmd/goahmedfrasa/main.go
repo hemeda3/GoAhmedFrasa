@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"farasa/pkg/farasa"
+	"goahmedfrasa/pkg/goahmedfrasa"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 
 	fmt.Fprint(os.Stderr, "Initializing the system ....")
 
-	nbt, err := farasa.NewFarasa(dir)
+	nbt, err := goahmedfrasa.NewFarasa(dir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "\nError initializing Farasa: %v\n", err)
 		os.Exit(1)
@@ -74,18 +74,18 @@ func main() {
 	processBuffer(reader, writer, nbt, *scheme, *normFlag)
 }
 
-func processBuffer(reader *bufio.Reader, writer *bufio.Writer, nbt *farasa.Farasa, scheme string, norm bool) {
+func processBuffer(reader *bufio.Reader, writer *bufio.Writer, nbt *goahmedfrasa.Farasa, scheme string, norm bool) {
 	scanner := bufio.NewScanner(reader)
 	// Increase scanner buffer for long lines
 	scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		words := farasa.Tokenize(farasa.RemoveDiacritics(line))
+		words := goahmedfrasa.Tokenize(goahmedfrasa.RemoveDiacritics(line))
 
 		for _, w := range words {
 			if cached, ok := nbt.HmSeenBefore[w]; !ok {
-				solutions := nbt.MostLikelyPartition(farasa.Buck2UTF8(w), 1)
+				solutions := nbt.MostLikelyPartition(goahmedfrasa.Buck2UTF8(w), 1)
 				topSolution := w
 				if len(solutions) > 0 {
 					topSolution = solutions[0].GetPartition()
@@ -97,7 +97,7 @@ func processBuffer(reader *bufio.Reader, writer *bufio.Writer, nbt *farasa.Faras
 					topSolution = produceSpecialSegmentation(topSolution, nbt, norm)
 				} else {
 					if norm {
-						topSolution = farasa.NormalizeFull(topSolution)
+						topSolution = goahmedfrasa.NormalizeFull(topSolution)
 					}
 				}
 				nbt.HmSeenBefore[w] = topSolution
@@ -111,7 +111,7 @@ func processBuffer(reader *bufio.Reader, writer *bufio.Writer, nbt *farasa.Faras
 				} else {
 					topSolution = strings.ReplaceAll(strings.ReplaceAll(cached, ";", ""), "++", "+")
 					if norm {
-						topSolution = farasa.NormalizeFull(topSolution)
+						topSolution = goahmedfrasa.NormalizeFull(topSolution)
 					}
 				}
 				writer.WriteString(topSolution + " ")
@@ -121,7 +121,7 @@ func processBuffer(reader *bufio.Reader, writer *bufio.Writer, nbt *farasa.Faras
 	}
 }
 
-func produceSpecialSegmentation(segmentedWord string, nbt *farasa.Farasa, norm bool) string {
+func produceSpecialSegmentation(segmentedWord string, nbt *goahmedfrasa.Farasa, norm bool) string {
 	tmp := nbt.GetProperSegmentation(segmentedWord)
 
 	// attach Al to the word
@@ -132,7 +132,7 @@ func produceSpecialSegmentation(segmentedWord string, nbt *farasa.Farasa, norm b
 
 	// normalize output
 	if norm {
-		tmp = farasa.NormalizeFull(tmp)
+		tmp = goahmedfrasa.NormalizeFull(tmp)
 	}
 
 	// concat all prefixes and all suffixes

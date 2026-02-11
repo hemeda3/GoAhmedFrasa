@@ -1,4 +1,4 @@
-# FarasaGo
+# GoAhmedFrasa
 
 Go port of QCRI's Farasa Arabic morphological segmenter. Takes Arabic text, splits each word into prefix + stem + suffix.
 
@@ -84,7 +84,7 @@ Arabic text input
 ## Build
 
 ```
-go build -o farasa ./cmd/farasa/
+go build -o goahmedfrasa ./cmd/goahmedfrasa/
 ```
 
 ## Usage
@@ -92,7 +92,7 @@ go build -o farasa ./cmd/farasa/
 ### From stdin
 
 ```
-echo "مؤتمر الأمم المتحدة للتجارة والتنمية" | ./farasa -d ./data/
+echo "مؤتمر الأمم المتحدة للتجارة والتنمية" | ./goahmedfrasa -d ./data/
 ```
 
 Output:
@@ -103,13 +103,13 @@ Output:
 ### From file
 
 ```
-./farasa -d ./data/ -i input.txt -o output.txt
+./goahmedfrasa -d ./data/ -i input.txt -o output.txt
 ```
 
 ### ATB scheme (Arabic Treebank segmentation)
 
 ```
-echo "بالمحكمة" | ./farasa -d ./data/ -c atb
+echo "بالمحكمة" | ./goahmedfrasa -d ./data/ -c atb
 ```
 
 ### All flags
@@ -130,19 +130,19 @@ package main
 import (
     "fmt"
     "strings"
-    "farasa/pkg/farasa"
+    "goahmedfrasa/pkg/goahmedfrasa"
 )
 
 func main() {
     // Initialize
-    f, err := farasa.NewFarasa("./data/")
+    f, err := goahmedfrasa.NewFarasa("./data/")
     if err != nil {
         panic(err)
     }
 
     // Segment a word
     word := "للتواصل"
-    solutions := f.MostLikelyPartition(farasa.Buck2UTF8(word), 1)
+    solutions := f.MostLikelyPartition(goahmedfrasa.Buck2UTF8(word), 1)
     if len(solutions) > 0 {
         result := solutions[0].GetPartition()
         result = strings.ReplaceAll(strings.ReplaceAll(result, ";", ""), "++", "+")
@@ -151,9 +151,9 @@ func main() {
 
     // Utilities
     text := "كِتَابٌ"
-    clean := farasa.RemoveDiacritics(text)    // كتاب
-    normalized := farasa.NormalizeFull(clean)  // كتاب
-    tokens := farasa.Tokenize(clean)           // ["ktAb"] (Buckwalter)
+    clean := goahmedfrasa.RemoveDiacritics(text)    // كتاب
+    normalized := goahmedfrasa.NormalizeFull(clean)  // كتاب
+    tokens := goahmedfrasa.Tokenize(clean)           // ["ktAb"] (Buckwalter)
     fmt.Println(clean, normalized, tokens)
 }
 ```
@@ -161,11 +161,11 @@ func main() {
 ## Source files
 
 ```
-cmd/farasa/main.go          CLI entry point, stdin/file processing
-pkg/farasa/farasa.go        Core segmenter: scoring, partitioning, dictionary lookups
-pkg/farasa/arabicutils.go   Arabic text utilities: transliteration, normalization, tokenization
-pkg/farasa/fittemplate.go   Morphological template matching (Arabic root/pattern system)
-data/                       26 JSON dictionary files
+cmd/goahmedfrasa/main.go          CLI entry point, stdin/file processing
+pkg/goahmedfrasa/farasa.go        Core segmenter: scoring, partitioning, dictionary lookups
+pkg/goahmedfrasa/arabicutils.go   Arabic text utilities: transliteration, normalization, tokenization
+pkg/goahmedfrasa/fittemplate.go   Morphological template matching (Arabic root/pattern system)
+data/                              26 JSON dictionary files
 ```
 
 ### Core functions
